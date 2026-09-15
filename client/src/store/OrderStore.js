@@ -128,7 +128,9 @@ const OrderStore = create((set, get) => ({
     },
 
     CreateOrder: async () => {
+
         try {
+
             const cartItem = get().CartItemData;
 
             if (cartItem.length === 0) {
@@ -136,34 +138,47 @@ const OrderStore = create((set, get) => ({
                 return;
             }
 
+            const subtotal = cartItem.reduce(
+                (total, item) =>
+                    total +
+                    Number(item.price) * Number(item.quantity),
+                0
+            );
+
+            const deliveryFee = 40;
+
+            const total = subtotal + deliveryFee;
+
             const { data } = await axios.post(
                 "/order/create",
                 {
-                    cartItem: cartItem,
+                    cartItem,
+                    deliveryFee,
+                    totalCartValue: total,
                 }
             );
 
-            console.log(
-                "Create Order Response:",
-                data
-            );
+            console.log("Create Order Response:", data);
 
             if (data.success) {
-                alert(
-                    "Order created successfully!"
-                );
+
+                alert("Order created successfully!");
 
                 set({
                     CartItemData: [],
                     cartCount: 0,
                 });
+
             } else {
+
                 alert(
                     data.message ||
                     "Order could not be created"
                 );
             }
+
         } catch (error) {
+
             console.log(
                 "Create Order Error:",
                 error
@@ -177,73 +192,43 @@ const OrderStore = create((set, get) => ({
     },
 
     // =========================
-    // FETCH USER ORDERS
-    // =========================
-    fetchUserOrder: async () => {
-        try {
-            const { data } = await axios.get(
-                "/order/getAllOrderUser"
-            );
-
-            console.log(
-                "User Orders:",
-                data
-            );
-
-            if (data.success) {
-                set({
-                    orderData:
-                        data.orderData || [],
-                });
-            } else {
-                console.log(
-                    data.message ||
-                    "Unable to fetch orders"
-                );
-            }
-        } catch (error) {
-            console.log(
-                "Fetch User Order Error:",
-                error
-            );
-
-            alert(
-                error.response?.data?.message ||
-                "Unable to fetch orders"
-            );
-        }
-    },
-
-    // =========================
     // FETCH ADMIN ORDERS
     // =========================
     fetchAdminOrder: async () => {
+
         try {
+
             const { data } = await axios.get(
                 "/order/getAllOrderAdmin"
             );
 
-            console.log(
-                "Admin Orders:",
-                data
-            );
+            console.log("Admin Orders:", data);
 
             if (data.success) {
+
                 set({
-                    orderData:
-                        data.orderData || [],
+                    orderData: data.orderData || []
                 });
+
             } else {
-                console.log(
-                    data.message ||
-                    "Unable to fetch admin orders"
-                );
+
+                set({
+                    orderData: []
+                });
+
+                console.log(data.message);
             }
+
         } catch (error) {
+
             console.log(
                 "Fetch Admin Order Error:",
                 error
             );
+
+            set({
+                orderData: []
+            });
 
             alert(
                 error.response?.data?.message ||
@@ -252,18 +237,62 @@ const OrderStore = create((set, get) => ({
         }
     },
 
+    fetchUserOrder: async () => {
+
+        try {
+
+            const { data } = await axios.get(
+                "/order/getAllOrderUser"
+            );
+
+            console.log("User Orders:", data);
+
+            if (data.success) {
+
+                set({
+                    orderData: data.orderData || []
+                });
+
+            } else {
+
+                console.log(
+                    data.message || "Unable to fetch user orders"
+                );
+
+                set({
+                    orderData: []
+                });
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Fetch User Order Error:",
+                error
+            );
+
+            set({
+                orderData: []
+            });
+
+            alert(
+                error.response?.data?.message ||
+                "Unable to fetch user orders"
+            );
+        }
+    },
+
     // =========================
     // CHANGE ORDER STATUS
     // =========================
-    OrderStatusChange: async (
-        orderid,
-        OrderStatus
-    ) => {
+    OrderStatusChange: async (orderid, OrderStatus) => {
+
         try {
+
             const { data } = await axios.post(
                 `/order/changeStatus/${orderid}`,
                 {
-                    status: OrderStatus,
+                    status: OrderStatus
                 }
             );
 
@@ -273,19 +302,24 @@ const OrderStore = create((set, get) => ({
             );
 
             if (data.success) {
+
                 alert(
                     data.message ||
                     "Order status updated"
                 );
 
                 await get().fetchAdminOrder();
+
             } else {
+
                 alert(
                     data.message ||
                     "Unable to change order status"
                 );
             }
+
         } catch (error) {
+
             console.log(
                 "Order Status Error:",
                 error
@@ -296,7 +330,7 @@ const OrderStore = create((set, get) => ({
                 "Unable to change order status"
             );
         }
-    },
+    }
 }));
 
 export default OrderStore;

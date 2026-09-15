@@ -3,9 +3,10 @@ import OrderHistory from "../../Components/OrderHistory.jsx";
 import OrderStore from "../../store/OrderStore.js";
 
 const Orders = () => {
+
     const {
         fetchUserOrder,
-        orderData,
+        orderData
     } = OrderStore();
 
     useEffect(() => {
@@ -18,8 +19,7 @@ const Orders = () => {
             <div className="max-w-5xl mx-auto">
 
                 <OrderHistory
-                    orders={orderData}
-                    isAdmin={false}
+                    orderData={orderData}
                 />
 
             </div>

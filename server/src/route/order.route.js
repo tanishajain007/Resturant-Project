@@ -1,21 +1,59 @@
 import { Router } from "express";
+
 import {
     CreateOrder,
-    getAllOrderAdmin,
-    getAllOrderUser,
+    GetAllOrderAdmin,
+    GetUserOrder,
     UpdateOrderStatus,
 } from "../controller/order.controller.js";
+
 import roleMiddleware from "../libs/roleMiddleware.js";
 
 const router = Router();
 
-// create order
 
-router.post("/create", roleMiddleware("admin", "user"), CreateOrder);
+// ===============================
+// CREATE ORDER
+// ===============================
 
-router.post("/chageStatus/:id", roleMiddleware("admin"), UpdateOrderStatus);
-router.get("/getAllOrderAdmin", roleMiddleware("admin"), getAllOrderAdmin);
-router.get("/getAllOrderUser", roleMiddleware("user"), getAllOrderUser);
-// update order status
+router.post(
+    "/create",
+    roleMiddleware("admin", "user"),
+    CreateOrder
+);
+
+
+// ===============================
+// UPDATE ORDER STATUS
+// ===============================
+
+router.post(
+    "/changeStatus/:id",
+    roleMiddleware("admin"),
+    UpdateOrderStatus
+);
+
+
+// ===============================
+// ADMIN ORDERS
+// ===============================
+
+router.get(
+    "/getAllOrderAdmin",
+    roleMiddleware("admin"),
+    GetAllOrderAdmin
+);
+
+
+// ===============================
+// USER ORDERS
+// ===============================
+
+router.get(
+    "/getAllOrderUser",
+    roleMiddleware("user"),
+    GetUserOrder
+);
+
 
 export default router;

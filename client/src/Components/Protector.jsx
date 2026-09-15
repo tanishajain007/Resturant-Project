@@ -1,17 +1,15 @@
-import { Navigate, Outlet } from "react-router-dom"
-import AuthStore from '../store/AuthStore'
+import { Navigate, Outlet } from "react-router-dom";
+import AuthStore from "../store/AuthStore.js";
 
 const Protector = () => {
-  const { userData } = AuthStore();
 
-  console.log(userData);
+    const { userData } = AuthStore();
 
-  if (!userData) {
-    return <Navigate to="/" />
-  }
-  else {
-    return <Outlet />
-  }
-}
+    if (!userData) {
+        return <Navigate to="/login" replace />;
+    }
 
-export default Protector
+    return <Outlet />;
+};
+
+export default Protector;

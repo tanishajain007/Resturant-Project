@@ -3,10 +3,11 @@ import OrderStore from "../../store/OrderStore.js";
 import OrderHistory from "./OrderHistory.jsx";
 
 const OrdersPage = () => {
+
     const {
         orderData,
         fetchAdminOrder,
-        OrderStatusChange,
+        OrderStatusChange
     } = OrderStore();
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const OrdersPage = () => {
             <div className="mx-auto w-full max-w-5xl">
 
                 <OrderHistory
-                    orders={orderData}
+                    orderData={orderData}
                     onStatusChange={OrderStatusChange}
                 />
 

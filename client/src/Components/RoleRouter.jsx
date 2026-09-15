@@ -1,17 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
-import AuthStore from "../store/AuthStore.js"
-
+import AuthStore from "../store/AuthStore.js";
 
 const RoleRouter = () => {
-    
-    const {isAdmin} = AuthStore();
 
-    if(isAdmin=="admin"){
-        return <Outlet/>
-    }
-    else{
-        return <Navigate to="/" />
-    }
-}
+    const { isAdmin } = AuthStore();
 
-export default RoleRouter
+    if (isAdmin === "admin") {
+        return <Outlet />;
+    }
+
+    return <Navigate to="/" replace />;
+};
+
+export default RoleRouter;
