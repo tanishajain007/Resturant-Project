@@ -58,7 +58,7 @@ export const LoginController = async (req, res) => {
             expires: new Date(Date.now() + 3600 * 1000 * 24 * 180 * 1),
             httpOnly: true,
             secure: false, // true in production with HTTPS
-            sameSite: "lax",
+            sameSite: "none",
         });
 
         return res.json({
@@ -140,7 +140,7 @@ export const RegisterController = async (req, res) => {
             expires: new Date(Date.now() + 3600 * 1000 * 24 * 180),
             httpOnly: true,
             secure: false,
-            sameSite: "lax",
+            sameSite: "none",
         });
 
         return res.status(201).json({
@@ -170,7 +170,7 @@ export const LogoutController = async (req, res) => {
         res.clearCookie("jwt", {
             httpOnly: true,
             secure: false,
-            sameSite: "lax",
+            sameSite: "none",
         });
 
         return res.status(200).json({
@@ -191,36 +191,28 @@ export const LogoutController = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
     try {
-        const token = req.cookies;
+        const token = req.cookies?.jwt;
 
-        console.log(token)
-        console.log(typeof token)
-
-        if (Object.keys(token).length == 0) {
-            return res.json({
+        if (!token) {
+            return res.status(401).json({
                 success: false,
                 message: "Token not found"
-            })
+            });
         }
 
-        console.log(token)
+        const decodedToken = await verifyToken(token);
 
-        console.log(await verifyToken(token.jwt));
-
-        let decodedToken = await verifyToken(token.jwt);
-
-        return res.json({
+        return res.status(200).json({
             success: true,
             token: decodedToken
-        })
+        });
+
     } catch (error) {
-        console.log({
-            "error": "You got Error",
-            "errorinfo": error
-        })
-        return res.json({
+        console.log("CHECK AUTH ERROR:", error);
+
+        return res.status(401).json({
             success: false,
-            message: "Error on Server"
-        })
+            message: "Invalid or expired token"
+        });
     }
-}
+};
