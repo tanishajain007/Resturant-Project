@@ -57,7 +57,7 @@ export const LoginController = async (req, res) => {
         res.cookie("jwt", token, {
             expires: new Date(Date.now() + 3600 * 1000 * 24 * 180 * 1),
             httpOnly: true,
-            secure: false, // true in production with HTTPS
+            secure: true, // true in production with HTTPS
             sameSite: "none",
         });
 
@@ -139,7 +139,7 @@ export const RegisterController = async (req, res) => {
         res.cookie("jwt", token, {
             expires: new Date(Date.now() + 3600 * 1000 * 24 * 180),
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "none",
         });
 
@@ -169,7 +169,7 @@ export const LogoutController = async (req, res) => {
 
         res.clearCookie("jwt", {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "none",
         });
 
